@@ -31,20 +31,9 @@ namespace ICSharpCode.Decompiler.CSharp.Syntax
 	/// <summary>
 	/// { Elements }
 	/// </summary>
-	public class ArrayInitializerExpression : Expression
+	[DecompilerAstNode(true)]
+	public partial class ArrayInitializerExpression : Expression
 	{
-		/// <summary>
-		/// For ease of use purposes in the resolver the ast representation
-		/// of { a, b, c }  is { {a}, {b}, {c} }.
-		/// If IsSingleElement is true then this array initializer expression is a generated one.
-		/// That has no meaning in the source code (and contains no brace tokens).
-		/// </summary>
-		public virtual bool IsSingleElement {
-			get {
-				return false;
-			}
-		}
-
 		public ArrayInitializerExpression()
 		{
 		}
@@ -59,39 +48,6 @@ namespace ICSharpCode.Decompiler.CSharp.Syntax
 			this.Elements.AddRange(elements);
 		}
 
-		#region Null
-		public new static readonly ArrayInitializerExpression Null = new NullArrayInitializerExpression();
-
-		sealed class NullArrayInitializerExpression : ArrayInitializerExpression
-		{
-			public override bool IsNull {
-				get {
-					return true;
-				}
-			}
-
-			public override void AcceptVisitor(IAstVisitor visitor)
-			{
-				visitor.VisitNullNode(this);
-			}
-
-			public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
-			{
-				return visitor.VisitNullNode(this);
-			}
-
-			public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
-			{
-				return visitor.VisitNullNode(this, data);
-			}
-
-			protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-			{
-				return other == null || other.IsNull;
-			}
-		}
-		#endregion
-
 		public CSharpTokenNode LBraceToken {
 			get { return GetChildByRole(Roles.LBrace); }
 		}
@@ -102,44 +58,6 @@ namespace ICSharpCode.Decompiler.CSharp.Syntax
 
 		public CSharpTokenNode RBraceToken {
 			get { return GetChildByRole(Roles.RBrace); }
-		}
-
-		public override void AcceptVisitor(IAstVisitor visitor)
-		{
-			visitor.VisitArrayInitializerExpression(this);
-		}
-
-		public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
-		{
-			return visitor.VisitArrayInitializerExpression(this);
-		}
-
-		public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitArrayInitializerExpression(this, data);
-		}
-
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			ArrayInitializerExpression o = other as ArrayInitializerExpression;
-			return o != null && this.Elements.DoMatch(o.Elements, match);
-		}
-
-		public static ArrayInitializerExpression CreateSingleElementInitializer()
-		{
-			return new SingleArrayInitializerExpression();
-		}
-		/// <summary>
-		/// Single elements in array initializers are represented with this special class.
-		/// </summary>
-		class SingleArrayInitializerExpression : ArrayInitializerExpression
-		{
-			public override bool IsSingleElement {
-				get {
-					return true;
-				}
-			}
-
 		}
 
 		#region PatternPlaceholder

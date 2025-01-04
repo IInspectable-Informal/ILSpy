@@ -17,7 +17,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 
 namespace ICSharpCode.Decompiler.CSharp.Syntax
 {
@@ -28,41 +27,9 @@ namespace ICSharpCode.Decompiler.CSharp.Syntax
 	/// This class is useful even though it doesn't provide any additional functionality:
 	/// It can be used to communicate more information in APIs, e.g. "this subnode will always be an expression"
 	/// </remarks>
-	public abstract class Expression : AstNode
+	[DecompilerAstNode(true)]
+	public abstract partial class Expression : AstNode
 	{
-		#region Null
-		public new static readonly Expression Null = new NullExpression();
-
-		sealed class NullExpression : Expression
-		{
-			public override bool IsNull {
-				get {
-					return true;
-				}
-			}
-
-			public override void AcceptVisitor(IAstVisitor visitor)
-			{
-				visitor.VisitNullNode(this);
-			}
-
-			public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
-			{
-				return visitor.VisitNullNode(this);
-			}
-
-			public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
-			{
-				return visitor.VisitNullNode(this, data);
-			}
-
-			protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-			{
-				return other == null || other.IsNull;
-			}
-		}
-		#endregion
-
 		#region PatternPlaceholder
 		public static implicit operator Expression(PatternMatching.Pattern pattern)
 		{

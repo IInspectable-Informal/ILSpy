@@ -20,51 +20,18 @@ using ICSharpCode.Decompiler.CSharp.Syntax.PatternMatching;
 
 namespace ICSharpCode.Decompiler.CSharp.Syntax
 {
-	public abstract class VariableDesignation : AstNode
+	[DecompilerAstNode(true)]
+	public abstract partial class VariableDesignation : AstNode
 	{
 		public override NodeType NodeType => NodeType.Unknown;
-
-		#region Null
-		public new static readonly VariableDesignation Null = new NullVariableDesignation();
-
-		sealed class NullVariableDesignation : VariableDesignation
-		{
-			public override bool IsNull {
-				get {
-					return true;
-				}
-			}
-
-			public override void AcceptVisitor(IAstVisitor visitor)
-			{
-				visitor.VisitNullNode(this);
-			}
-
-			public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
-			{
-				return visitor.VisitNullNode(this);
-			}
-
-			public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
-			{
-				return visitor.VisitNullNode(this, data);
-			}
-
-			protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-			{
-				return other == null || other.IsNull;
-			}
-		}
-		#endregion
-
 	}
 
 	/// <summary>
 	/// Identifier
 	/// </summary>
-	public class SingleVariableDesignation : VariableDesignation
+	[DecompilerAstNode(false)]
+	public partial class SingleVariableDesignation : VariableDesignation
 	{
-
 		public string Identifier {
 			get { return GetChildByRole(Roles.Identifier).Name; }
 			set { SetChildByRole(Roles.Identifier, Syntax.Identifier.Create(value)); }
@@ -99,7 +66,8 @@ namespace ICSharpCode.Decompiler.CSharp.Syntax
 	/// <summary>
 	/// ( VariableDesignation (, VariableDesignation)* )
 	/// </summary>
-	public class ParenthesizedVariableDesignation : VariableDesignation
+	[DecompilerAstNode(false)]
+	public partial class ParenthesizedVariableDesignation : VariableDesignation
 	{
 
 		public CSharpTokenNode LParToken {

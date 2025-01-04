@@ -17,7 +17,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Diagnostics;
 using System.Linq;
 
 using ICSharpCode.Decompiler.CSharp.Syntax;
@@ -387,9 +386,20 @@ namespace ICSharpCode.Decompiler.CSharp.Transforms
 			return false;
 		}
 
-		private static bool ValidateParameter(ParameterDeclaration p)
+		private static bool ValidateParameter(ParameterDeclaration decl)
 		{
-			return p.ParameterModifier == Decompiler.TypeSystem.ReferenceKind.None && p.Attributes.Count == 0;
+			if (decl.ParameterModifier != Decompiler.TypeSystem.ReferenceKind.None || decl.Attributes.Count != 0)
+			{
+				return false;
+			}
+			if (decl.Type is TupleAstType tupleType)
+			{
+				if (tupleType.DescendantNodes().OfType<TupleTypeElement>().Any(e => e.Name != null))
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 }

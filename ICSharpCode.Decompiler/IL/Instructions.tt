@@ -856,7 +856,8 @@ namespace ICSharpCode.Decompiler.IL
 					opCode.PerformMatchConditions.Add("Patterns.ListMatch.DoMatch(this." + argProp + ", o." + argProp + ", ref match)");
 					if (i == 0)
 						opCode.WriteArguments.Add("bool first = true;");
-					opCode.WriteArguments.Add("foreach (var " + arg + " in " + argProp + ") {");
+					opCode.WriteArguments.Add("foreach (var " + arg + " in " + argProp + ")");
+					opCode.WriteArguments.Add("{");
 					if (i > 0)
 						opCode.WriteArguments.Add("\toutput.Write(\", \");");
 					else
@@ -916,7 +917,8 @@ namespace ICSharpCode.Decompiler.IL
 			b = new StringBuilder();
 			b.AppendLine("protected sealed override ILInstruction GetChild(int index)");
 			b.AppendLine("{");
-			b.AppendLine("\tswitch (index) {");
+			b.AppendLine("\tswitch (index)");
+			b.AppendLine("\t{");
 			for (int i = 0; i < childCount; i++) {
 				b.AppendLine("\t\tcase " + i + ":");
 				b.AppendLine("\t\t\treturn this." + children[i].Name + ";");
@@ -933,7 +935,8 @@ namespace ICSharpCode.Decompiler.IL
 			b = new StringBuilder();
 			b.AppendLine("protected sealed override void SetChild(int index, ILInstruction value)");
 			b.AppendLine("{");
-			b.AppendLine("\tswitch (index) {");
+			b.AppendLine("\tswitch (index)");
+			b.AppendLine("\t{");
 			for (int i = 0; i < childCount; i++) {
 				b.AppendLine("\t\tcase " + i + ":");
 				b.AppendLine("\t\t\tthis." + children[i].PropertyName + " = value;");
@@ -953,7 +956,8 @@ namespace ICSharpCode.Decompiler.IL
 			b = new StringBuilder();
 			b.AppendLine("protected sealed override SlotInfo GetChildSlot(int index)");
 			b.AppendLine("{");
-			b.AppendLine("\tswitch (index) {");
+			b.AppendLine("\tswitch (index)");
+			b.AppendLine("\t{");
 			for (int i = 0; i < childCount; i++) {
 				b.AppendLine("\t\tcase " + i + ":");
 				b.AppendLine("\t\t\treturn " + children[i].SlotName + ";");
@@ -1078,7 +1082,7 @@ protected override void Disconnected()
 		opCode.MatchParameters.Add(new MatchParamInfo { TypeName = "IField", Name = "field", FieldName = "Field" });
 		opCode.PerformMatchConditions.Add("field.Equals(o.field)");
 		opCode.Members.Add("/// <summary>Returns the field operand.</summary>" + Environment.NewLine
-						+ "public IField Field { get { return field; } }");
+						+ "public IField Field { get { return this.field; } }");
 		opCode.GenerateWriteTo = true;
 		opCode.WriteOperand.Add("output.Write(' ');");
 		opCode.WriteOperand.Add("field.WriteTo(output);");
@@ -1113,7 +1117,8 @@ protected override void Disconnected()
 			opCode.Members.Add("/// <summary>Returns the method operand.</summary>" + Environment.NewLine
 							+ $"public IMethod{n} Method => method;");
 			opCode.GenerateWriteTo = true;
-			opCode.WriteOperand.Add("if (method != null) {");
+			opCode.WriteOperand.Add("if (method != null)");
+			opCode.WriteOperand.Add("{");
 			opCode.WriteOperand.Add("\toutput.Write(' ');");
 			opCode.WriteOperand.Add("\tmethod.WriteTo(output);");
 			opCode.WriteOperand.Add("}");

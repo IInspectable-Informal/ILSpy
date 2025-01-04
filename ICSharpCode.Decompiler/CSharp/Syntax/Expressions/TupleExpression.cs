@@ -16,13 +16,12 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System;
-
 using ICSharpCode.Decompiler.CSharp.Syntax.PatternMatching;
 
 namespace ICSharpCode.Decompiler.CSharp.Syntax
 {
-	public class TupleExpression : Expression
+	[DecompilerAstNode(false)]
+	public partial class TupleExpression : Expression
 	{
 		public AstNodeCollection<Expression> Elements {
 			get { return GetChildrenByRole(Roles.Expression); }

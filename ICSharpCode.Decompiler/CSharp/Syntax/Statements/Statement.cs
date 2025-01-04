@@ -27,41 +27,9 @@ namespace ICSharpCode.Decompiler.CSharp.Syntax
 	/// This class is useful even though it doesn't provide any additional functionality:
 	/// It can be used to communicate more information in APIs, e.g. "this subnode will always be a statement"
 	/// </remarks>
-	public abstract class Statement : AstNode
+	[DecompilerAstNode(true)]
+	public abstract partial class Statement : AstNode
 	{
-		#region Null
-		public new static readonly Statement Null = new NullStatement();
-
-		sealed class NullStatement : Statement
-		{
-			public override bool IsNull {
-				get {
-					return true;
-				}
-			}
-
-			public override void AcceptVisitor(IAstVisitor visitor)
-			{
-				visitor.VisitNullNode(this);
-			}
-
-			public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
-			{
-				return visitor.VisitNullNode(this);
-			}
-
-			public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
-			{
-				return visitor.VisitNullNode(this, data);
-			}
-
-			protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-			{
-				return other == null || other.IsNull;
-			}
-		}
-		#endregion
-
 		#region PatternPlaceholder
 		public static implicit operator Statement(PatternMatching.Pattern pattern)
 		{

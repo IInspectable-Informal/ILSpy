@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 using ICSharpCode.Decompiler.CSharp.Syntax.PatternMatching;
 
 namespace ICSharpCode.Decompiler.CSharp.Syntax
 {
-	public class InterpolatedStringExpression : Expression
+	[DecompilerAstNode(false)]
+	public partial class InterpolatedStringExpression : Expression
 	{
 		public static readonly TokenRole OpenQuote = new TokenRole("$\"");
 		public static readonly TokenRole CloseQuote = new TokenRole("\"");
@@ -47,41 +46,9 @@ namespace ICSharpCode.Decompiler.CSharp.Syntax
 		}
 	}
 
-	public abstract class InterpolatedStringContent : AstNode
+	[DecompilerAstNode(true)]
+	public abstract partial class InterpolatedStringContent : AstNode
 	{
-		#region Null
-		public new static readonly InterpolatedStringContent Null = new NullInterpolatedStringContent();
-
-		sealed class NullInterpolatedStringContent : InterpolatedStringContent
-		{
-			public override bool IsNull {
-				get {
-					return true;
-				}
-			}
-
-			public override void AcceptVisitor(IAstVisitor visitor)
-			{
-				visitor.VisitNullNode(this);
-			}
-
-			public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
-			{
-				return visitor.VisitNullNode(this);
-			}
-
-			public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
-			{
-				return visitor.VisitNullNode(this, data);
-			}
-
-			protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-			{
-				return other == null || other.IsNull;
-			}
-		}
-		#endregion
-
 		public new static readonly Role<InterpolatedStringContent> Role = new Role<InterpolatedStringContent>("InterpolatedStringContent", Syntax.InterpolatedStringContent.Null);
 
 		public override NodeType NodeType => NodeType.Unknown;
@@ -90,7 +57,8 @@ namespace ICSharpCode.Decompiler.CSharp.Syntax
 	/// <summary>
 	/// { Expression , Alignment : Suffix }
 	/// </summary>
-	public class Interpolation : InterpolatedStringContent
+	[DecompilerAstNode(false)]
+	public partial class Interpolation : InterpolatedStringContent
 	{
 		public static readonly TokenRole LBrace = new TokenRole("{");
 		public static readonly TokenRole RBrace = new TokenRole("}");
@@ -146,7 +114,8 @@ namespace ICSharpCode.Decompiler.CSharp.Syntax
 		}
 	}
 
-	public class InterpolatedStringText : InterpolatedStringContent
+	[DecompilerAstNode(false)]
+	public partial class InterpolatedStringText : InterpolatedStringContent
 	{
 		public string Text { get; set; }
 
